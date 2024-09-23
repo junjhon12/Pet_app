@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async'; // Import for Timer
 
+// Partner: Brenda Samano
+
 void main() {
   runApp(const Digivice());
 }
@@ -85,16 +87,15 @@ class _DigiHomePageState extends State<DigiHomePage> {
 
     setState(() {
       // Decrease hunger and mood based on elapsed time
-      hunger = (hunger - (elapsed.inSeconds * 2)).clamp(0, 100); // Hunger decreases by 2 per minute
+      hunger = (hunger + (elapsed.inSeconds * 2)).clamp(0, 100); // Hunger decreases by 2 per minute
       mood = (mood - (elapsed.inSeconds * 1)).clamp(0, 100); // Mood decreases by 1 per minute
-
       // Regain life over time if not at max life
       if (life < maxLife) {
         life = (life + (elapsed.inSeconds * 1)).clamp(0, maxLife); // Life regains by 1 per minute
       }
 
       // If hunger reaches 0, decrease life
-      if (hunger == 0) {
+      if (hunger == 100) {
         int lifeLoss = 10;
         if (mood == 0) {
           lifeLoss *= 2;
@@ -146,7 +147,7 @@ class _DigiHomePageState extends State<DigiHomePage> {
   void rest() {
   setState(() {
     mood = clampStat(mood + 30, 0, 100); // Increase mood by 30, clamp to 0-100
-    hunger = clampStat(hunger - 5, 0, 100); // Decrease hunger by 5, clamp to 0-100
+    hunger = clampStat(hunger + 5, 0, 100); // Decrease hunger by 5, clamp to 0-100
     energy = clampStat(energy + 30, 0, maxEnergy); // Increase energy by 30, clamp to 0-maxEnergy
     life = clampStat(life + 50, 0, maxLife); // Increase life by 50, clamp to 0-maxLife
   });
@@ -157,7 +158,7 @@ class _DigiHomePageState extends State<DigiHomePage> {
   void play() {
     setState(() {
       mood = clampStat(mood + 10, 0, 100); // Increase mood
-      hunger = clampStat(hunger - 5, 0, 100); // Decrease hunger
+      hunger = clampStat(hunger + 5, 0, 100); // Decrease hunger
       energy -= 10; // Decrease energy
       str += randomStatChange(playMin, playMax); // Increase strength
       dex += randomStatChange(playMin, playMax); // Increase dexterity
@@ -168,24 +169,23 @@ class _DigiHomePageState extends State<DigiHomePage> {
   // Feed function to increase mood and hunger
   void feed() {
     setState(() {
-      if (hunger == 100) {
+      if (hunger == 0) {
         life = (life - 10).clamp(0, maxLife); // Lose 10 life if hunger is max
-      } else {
-        mood = clampStat(mood + 5, 0, 100); // Increase mood
-        hunger = clampStat(hunger + 10, 0, 100); // Increase hunger
-        energy += 10; // Increase energy
       }
+        mood = clampStat(mood + 5, 0, 100); // Increase mood
+        hunger = clampStat(hunger - 10, 0, 100); // Increase hunger
+        energy += 10; // Increase energy
     });
   }
 
   // Train function to improve stats while decreasing mood and hunger
   void train() {
     setState(() {
-        if (hunger == 0) {
+        if (hunger == 100) {
           life = (life - 10).clamp(0, maxLife); // Lose 10 life if hunger is 0
         }
         mood = clampStat(mood - 10, 0, 100); // Decrease mood
-        hunger = clampStat(hunger - 15, 0, 100); // Decrease hunger
+        hunger = clampStat(hunger + 15, 0, 100); // Decrease hunger
         energy -= 15; // Decrease energy
         str += randomStatChange(trainMin, trainMax); // Improve strength
         intelligence += randomStatChange(trainMin, trainMax); // Improve intelligence
@@ -297,7 +297,7 @@ class _DigiHomePageState extends State<DigiHomePage> {
                   child: const Text('😴'), // Button label
                 ),
               ),
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               // Play button
               Expanded(
                 child: ElevatedButton(
@@ -309,7 +309,7 @@ class _DigiHomePageState extends State<DigiHomePage> {
                   child: const Text('🏃‍♂️'), // Button label
                 ),
               ),
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               // Feed button
               Expanded(
                 child: ElevatedButton(
@@ -321,7 +321,7 @@ class _DigiHomePageState extends State<DigiHomePage> {
                   child: const Text('🍽️'), // Button label
                 ),
               ),
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               // Train button
               Expanded(
                 child: ElevatedButton(
@@ -333,7 +333,7 @@ class _DigiHomePageState extends State<DigiHomePage> {
                   child: const Text('🏋️‍♂️'), // Button label
                 ),
               ),
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               // Reset button
               Expanded(
                 child: ElevatedButton(
